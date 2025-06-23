@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  type WithSpringConfig,
 } from 'react-native-reanimated';
 
 const VIOLET = '#b58df1';
@@ -113,13 +114,27 @@ export default function SpringComparisonExample() {
   const [criticalRelativeWidthToggle, setCriticalRelativeWidthToggle] =
     useState(false);
 
-  const oldDefaultNoTimingConfig = {
+  const configUndercriticalWithClampWidth = useSharedValue(
+    LOWER_SPRING_TO_VALUE
+  );
+  const [
+    configUndercriticalWithClampWidthToggle,
+    setConfigUndercriticalWithClampWidthToggle,
+  ] = useState(false);
+
+  const configCriticalWithClampWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
+  const [
+    configCriticalWithClampWidthToggle,
+    setConfigCriticalWithClampWidthToggle,
+  ] = useState(false);
+
+  const oldDefaultNoTimingConfig: WithSpringConfig = {
     damping: 10,
     mass: 1,
     stiffness: 100,
   };
 
-  const newDefaultNoTimingConfig = {
+  const newDefaultNoTimingConfig: WithSpringConfig = {
     damping: 120,
     mass: 4,
     stiffness: 900,
@@ -133,6 +148,13 @@ export default function SpringComparisonExample() {
   const newDefaultTimingConfig = {
     duration: 800,
     dampingRatio: 1,
+  };
+
+  const newDefaultConfigWithClamp: WithSpringConfig = {
+    damping: 110,
+    mass: 4,
+    stiffness: 900,
+    overshootClamping: true,
   };
 
   const oldDefaultConfigNoTimingStyle = useAnimatedStyle(() => {
@@ -226,6 +248,90 @@ export default function SpringComparisonExample() {
       width:
         newCriticalRelativeWidth.value * RELATIVE_COEFFICIENT +
         LOWER_SPRING_TO_VALUE,
+    };
+  });
+
+  const newDefaultConfigTimingLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(configTimingWidth.value / 4, newDefaultTimingConfig),
+    };
+  });
+
+  const newDefaultConfigTimingMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(configTimingWidth.value / 2, newDefaultTimingConfig),
+    };
+  });
+
+  const newDefaultConfigNoTimingLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configNoTimingWidth.value / 4,
+        newDefaultNoTimingConfig
+      ),
+    };
+  });
+
+  const newDefaultConfigNoTimingMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configNoTimingWidth.value / 2,
+        newDefaultNoTimingConfig
+      ),
+    };
+  });
+
+  const newDefaultConfigWithClampLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configUndercriticalWithClampWidth.value / 4,
+        newDefaultConfigWithClamp
+      ),
+    };
+  });
+
+  const newDefaultConfigWithClampMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configUndercriticalWithClampWidth.value / 2,
+        newDefaultConfigWithClamp
+      ),
+    };
+  });
+
+  const newDefaultConfigWithClampStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configUndercriticalWithClampWidth.value,
+        newDefaultConfigWithClamp
+      ),
+    };
+  });
+
+  const newDefaultConfigNoClampLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configCriticalWithClampWidth.value / 4,
+        newDefaultNoTimingConfig
+      ),
+    };
+  });
+
+  const newDefaultConfigNoClampMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configCriticalWithClampWidth.value / 2,
+        newDefaultNoTimingConfig
+      ),
+    };
+  });
+
+  const newDefaultConfigNoClampStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(
+        configCriticalWithClampWidth.value,
+        newDefaultNoTimingConfig
+      ),
     };
   });
 
@@ -376,6 +482,108 @@ export default function SpringComparisonExample() {
               newDefaultNoTimingConfig
             );
             setCriticalRelativeWidthToggle(!criticalRelativeWidthToggle);
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={newDefaultConfigTimingLowStyle}
+          description="New default config, timing, low value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigTimingMediumStyle}
+          description="New default config, timing, medium value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigTimingStyle}
+          description="New default config, timing, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            configTimingWidth.value = configTimingWidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setConfigTimingWidthToggle(!configTimingWidthToggle);
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={newDefaultConfigNoTimingLowStyle}
+          description="New default config, no timing, low value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigNoTimingMediumStyle}
+          description="New default config, no timing, medium value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigNoTimingStyle}
+          description="New default config, no timing, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            configNoTimingWidth.value = configNoTimingWidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setConfigNoTimingWidthToggle(!configNoTimingWidthToggle);
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={newDefaultConfigNoClampLowStyle}
+          description="New default config no clamp, low value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigNoClampMediumStyle}
+          description="New default config no clamp, medium value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigNoClampStyle}
+          description="New default config no clamp, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            configCriticalWithClampWidth.value =
+              configCriticalWithClampWidthToggle
+                ? LOWER_SPRING_TO_VALUE
+                : UPPER_SPRING_TO_VALUE;
+            setConfigCriticalWithClampWidthToggle(
+              !configCriticalWithClampWidthToggle
+            );
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={newDefaultConfigWithClampLowStyle}
+          description="New default config with clamp, low value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigWithClampMediumStyle}
+          description="New default config with clamp, medium value"
+        />
+        <Visualiser
+          testedStyle={newDefaultConfigWithClampStyle}
+          description="New default config with clamp, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            configUndercriticalWithClampWidth.value =
+              configUndercriticalWithClampWidthToggle
+                ? LOWER_SPRING_TO_VALUE
+                : UPPER_SPRING_TO_VALUE;
+            setConfigUndercriticalWithClampWidthToggle(
+              !configUndercriticalWithClampWidthToggle
+            );
           }}
         />
       </>

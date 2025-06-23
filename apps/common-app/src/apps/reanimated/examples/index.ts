@@ -108,6 +108,9 @@ import FreezingShareablesExample from './ShareableFreezingExample';
 import ShareablesExample from './ShareablesExample';
 import SharedStyleExample from './SharedStyleExample';
 import SpringComparisonExample from './SpringComparisonExample';
+import SpringNewConfigExample from './SpringNewConfigExample';
+import SpringNewConfigWithClampExample from './SpringNewConfigWithClampExample';
+import SpringOldConfigExample from './SpringOldConfigExample';
 import StickyHeaderExample from './StickyHeaderExample';
 import StrictDOMExample from './StrictDOMExample';
 import SvgExample from './SvgExample';
@@ -481,6 +484,21 @@ export const EXAMPLES: Record<string, Example> = {
     icon: '🗜',
     title: 'Spring with Clamp',
     screen: WithClampExample,
+  },
+  SpringOldConfigExample: {
+    icon: '🛠',
+    title: '1 (current)',
+    screen: SpringOldConfigExample,
+  },
+  SpringNewConfigExample: {
+    icon: '🆕',
+    title: '2 (new)',
+    screen: SpringNewConfigExample,
+  },
+  SpringNewConfigWithClampExample: {
+    icon: '🆕🗜',
+    title: '3 (new)',
+    screen: SpringNewConfigWithClampExample,
   },
   ReducedMotionExample: {
     icon: '⏸️',
