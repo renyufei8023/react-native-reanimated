@@ -6,7 +6,7 @@ import type {
   Animation,
   ReduceMotion,
   Timestamp,
-} from '../commonTypes';
+} from '../../commonTypes';
 
 /**
  * Spring animation configuration.

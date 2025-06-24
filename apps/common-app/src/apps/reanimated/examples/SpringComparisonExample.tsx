@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import type { ViewStyle } from 'react-native';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, {
+  GentleSpringConfig,
+  SnappySpringConfig,
   useAnimatedStyle,
   useSharedValue,
+  WigglySpringConfig,
   withSpring,
-  type WithSpringConfig,
 } from 'react-native-reanimated';
 
 const VIOLET = '#b58df1';
@@ -128,13 +130,28 @@ export default function SpringComparisonExample() {
     setConfigCriticalWithClampWidthToggle,
   ] = useState(false);
 
-  const oldDefaultNoTimingConfig: WithSpringConfig = {
+  const wigglyLowWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 3);
+  const wigglyMediumWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 2);
+  const wigglyHighWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
+  const [wigglyWidthToggle, setWigglyWidthToggle] = useState(false);
+
+  const gentleLowWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 3);
+  const gentleMediumWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 2);
+  const gentleHighWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
+  const [gentleWidthToggle, setGentleWidthToggle] = useState(false);
+
+  const snappyLowWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 3);
+  const snappyMediumWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 2);
+  const snappyHighWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
+  const [snappyWidthToggle, setSnappyWidthToggle] = useState(false);
+
+  const oldDefaultNoTimingConfig = {
     damping: 10,
     mass: 1,
     stiffness: 100,
   };
 
-  const newDefaultNoTimingConfig: WithSpringConfig = {
+  const newDefaultNoTimingConfig = {
     damping: 120,
     mass: 4,
     stiffness: 900,
@@ -150,7 +167,7 @@ export default function SpringComparisonExample() {
     dampingRatio: 1,
   };
 
-  const newDefaultConfigWithClamp: WithSpringConfig = {
+  const newDefaultConfigWithClamp = {
     damping: 110,
     mass: 4,
     stiffness: 900,
@@ -332,6 +349,60 @@ export default function SpringComparisonExample() {
         configCriticalWithClampWidth.value,
         newDefaultNoTimingConfig
       ),
+    };
+  });
+
+  const wigglyLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(wigglyLowWidth.value / 3, WigglySpringConfig),
+    };
+  });
+
+  const wigglyMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(wigglyMediumWidth.value / 2, WigglySpringConfig),
+    };
+  });
+
+  const wigglyHighStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(wigglyHighWidth.value, WigglySpringConfig),
+    };
+  });
+
+  const gentleLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(gentleLowWidth.value / 3, GentleSpringConfig),
+    };
+  });
+
+  const gentleMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(gentleMediumWidth.value / 2, GentleSpringConfig),
+    };
+  });
+
+  const gentleHighStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(gentleHighWidth.value, GentleSpringConfig),
+    };
+  });
+
+  const snappyLowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(snappyLowWidth.value / 3, SnappySpringConfig),
+    };
+  });
+
+  const snappyMediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(snappyMediumWidth.value / 2, SnappySpringConfig),
+    };
+  });
+
+  const snappyHighStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(snappyHighWidth.value, SnappySpringConfig),
     };
   });
 
@@ -584,6 +655,96 @@ export default function SpringComparisonExample() {
             setConfigUndercriticalWithClampWidthToggle(
               !configUndercriticalWithClampWidthToggle
             );
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={wigglyLowStyle}
+          description="Wiggly spring, low value"
+        />
+        <Visualiser
+          testedStyle={wigglyMediumStyle}
+          description="Wiggly spring, medium value"
+        />
+        <Visualiser
+          testedStyle={wigglyHighStyle}
+          description="Wiggly spring, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            wigglyLowWidth.value = wigglyWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 3
+              : UPPER_SPRING_TO_VALUE;
+            wigglyMediumWidth.value = wigglyWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 2
+              : UPPER_SPRING_TO_VALUE;
+            wigglyHighWidth.value = wigglyWidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setWigglyWidthToggle(!wigglyWidthToggle);
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={gentleLowStyle}
+          description="Gentle spring, low value"
+        />
+        <Visualiser
+          testedStyle={gentleMediumStyle}
+          description="Gentle spring, medium value"
+        />
+        <Visualiser
+          testedStyle={gentleHighStyle}
+          description="Gentle spring, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            gentleLowWidth.value = gentleWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 3
+              : UPPER_SPRING_TO_VALUE;
+            gentleMediumWidth.value = gentleWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 2
+              : UPPER_SPRING_TO_VALUE;
+            gentleHighWidth.value = gentleWidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setGentleWidthToggle(!gentleWidthToggle);
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={snappyLowStyle}
+          description="Snappy spring, low value"
+        />
+        <Visualiser
+          testedStyle={snappyMediumStyle}
+          description="Snappy spring, medium value"
+        />
+        <Visualiser
+          testedStyle={snappyHighStyle}
+          description="Snappy spring, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            snappyLowWidth.value = snappyWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 3
+              : UPPER_SPRING_TO_VALUE;
+            snappyMediumWidth.value = snappyWidthToggle
+              ? LOWER_SPRING_TO_VALUE * 2
+              : UPPER_SPRING_TO_VALUE;
+            snappyHighWidth.value = snappyWidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setSnappyWidthToggle(!snappyWidthToggle);
           }}
         />
       </>

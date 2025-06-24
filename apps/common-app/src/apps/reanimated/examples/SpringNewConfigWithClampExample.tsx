@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import type { ViewStyle } from 'react-native';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import type { WithSpringConfig } from 'react-native-reanimated';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  type WithSpringConfig,
 } from 'react-native-reanimated';
 
 const VIOLET = '#b58df1';
