@@ -145,6 +145,11 @@ export default function SpringComparisonExample() {
   const snappyHighWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
   const [snappyWidthToggle, setSnappyWidthToggle] = useState(false);
 
+  const reanimated3LowWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 3);
+  const reanimated3MediumWidth = useSharedValue(LOWER_SPRING_TO_VALUE * 2);
+  const reanimated3HighWidth = useSharedValue(LOWER_SPRING_TO_VALUE);
+  const [reanimated3WidthToggle, setReanimated3WidthToggle] = useState(false);
+
   const oldDefaultNoTimingConfig = {
     damping: 10,
     mass: 1,
@@ -406,6 +411,36 @@ export default function SpringComparisonExample() {
     };
   });
 
+  const reanimated3LowStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(reanimated3LowWidth.value / 3, {
+        damping: 10,
+        mass: 1,
+        stiffness: 100,
+      }),
+    };
+  });
+
+  const reanimated3MediumStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(reanimated3MediumWidth.value / 2, {
+        damping: 10,
+        mass: 1,
+        stiffness: 100,
+      }),
+    };
+  });
+
+  const reanimated3HighStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(reanimated3HighWidth.value, {
+        damping: 10,
+        mass: 1,
+        stiffness: 100,
+      }),
+    };
+  });
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <>
@@ -655,6 +690,36 @@ export default function SpringComparisonExample() {
             setConfigUndercriticalWithClampWidthToggle(
               !configUndercriticalWithClampWidthToggle
             );
+          }}
+        />
+      </>
+
+      <>
+        <Visualiser
+          testedStyle={reanimated3LowStyle}
+          description="Reanimated 3 spring, low value"
+        />
+        <Visualiser
+          testedStyle={reanimated3MediumStyle}
+          description="Reanimated 3 spring, medium value"
+        />
+        <Visualiser
+          testedStyle={reanimated3HighStyle}
+          description="Reanimated 3 spring, big value"
+        />
+        <Button
+          title="toggle"
+          onPress={() => {
+            reanimated3LowWidth.value = reanimated3WidthToggle
+              ? LOWER_SPRING_TO_VALUE * 3
+              : UPPER_SPRING_TO_VALUE;
+            reanimated3MediumWidth.value = reanimated3WidthToggle
+              ? LOWER_SPRING_TO_VALUE * 2
+              : UPPER_SPRING_TO_VALUE;
+            reanimated3HighWidth.value = reanimated3WidthToggle
+              ? LOWER_SPRING_TO_VALUE
+              : UPPER_SPRING_TO_VALUE;
+            setReanimated3WidthToggle(!reanimated3WidthToggle);
           }}
         />
       </>
