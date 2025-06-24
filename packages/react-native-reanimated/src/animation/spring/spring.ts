@@ -6,6 +6,7 @@ import type {
   Timestamp,
 } from '../../commonTypes';
 import { defineAnimation, getReduceMotionForAnimation } from '../util';
+import { GentleSpringConfig } from './springConfigs';
 import type {
   DefaultSpringConfig,
   InnerSpringAnimation,
@@ -54,9 +55,7 @@ export const withSpring = ((
   return defineAnimation<SpringAnimation>(toValue, () => {
     'worklet';
     const defaultConfig: DefaultSpringConfig = {
-      damping: 360,
-      mass: 1,
-      stiffness: 600,
+      ...GentleSpringConfig,
       overshootClamping: false,
       restDisplacementThreshold: 0.01,
       restSpeedThreshold: 2,
