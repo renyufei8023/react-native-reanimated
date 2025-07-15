@@ -62,13 +62,13 @@ static jsi::Value REANIMATED_SPEC_PREFIX(unregisterSensor)(
   return jsi::Value::undefined();
 }
 
-static jsi::Value REANIMATED_SPEC_PREFIX(registerJSProps)(
+static jsi::Value REANIMATED_SPEC_PREFIX(setDynamicFeatureFlag)(
     jsi::Runtime &rt,
     TurboModule &turboModule,
     const jsi::Value *args,
     size_t) {
   static_cast<ReanimatedModuleProxySpec *>(&turboModule)
-      ->registerJSProps(rt, std::move(args[0]), std::move(args[1]));
+      ->setDynamicFeatureFlag(rt, std::move(args[0]), std::move(args[1]));
   return jsi::Value::undefined();
 }
 
@@ -225,8 +225,8 @@ ReanimatedModuleProxySpec::ReanimatedModuleProxySpec(
       MethodMetadata{4, REANIMATED_SPEC_PREFIX(registerSensor)};
   methodMap_["unregisterSensor"] =
       MethodMetadata{1, REANIMATED_SPEC_PREFIX(unregisterSensor)};
-  methodMap_["registerJSProps"] =
-      MethodMetadata{2, REANIMATED_SPEC_PREFIX(registerJSProps)};
+  methodMap_["setDynamicFeatureFlag"] =
+      MethodMetadata{2, REANIMATED_SPEC_PREFIX(setDynamicFeatureFlag)};
   methodMap_["subscribeForKeyboardEvents"] =
       MethodMetadata{2, REANIMATED_SPEC_PREFIX(subscribeForKeyboardEvents)};
   methodMap_["unsubscribeFromKeyboardEvents"] =

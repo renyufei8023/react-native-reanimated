@@ -27,8 +27,10 @@
     "lint:root": "eslint . --ignore-pattern 'packages/**' --ignore-pattern 'apps/**' && yarn prettier --check --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .prettiereslintignore ."
   },
   "devDependencies": {
+    "@eslint/compat": "^1.2.9",
+    "@types/node": "^24.0.3",
     "@types/shelljs": "^0.8.15",
-    "eslint": "^9.29.0",
+    "eslint": "~9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.14.0",

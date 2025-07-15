@@ -1,6 +1,6 @@
 'use strict';
-import { logger } from './common/logger';
 
+import { logger } from './common';
 import type {
   AnimatedPropsAdapterFunction,
   AnimatedPropsAdapterWorklet,

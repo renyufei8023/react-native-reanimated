@@ -87,18 +87,11 @@ export { ReducedMotionConfig } from './component/ReducedMotionConfig';
 export type { AnimatedScrollViewProps } from './component/ScrollView';
 export { configureReanimatedLogger } from './ConfigHelper';
 export {
-  createWorkletRuntime,
   enableLayoutAnimations,
-  executeOnUIRuntimeSync,
   getViewProp,
   isConfigured,
   isReanimated3,
   makeMutable,
-  makeShareableCloneRecursive,
-  registerJSProps,
-  runOnJS,
-  runOnRuntime,
-  runOnUI,
 } from './core';
 export * from './css';
 export type {
@@ -107,6 +100,7 @@ export type {
   EasingFunctionFactory,
 } from './Easing';
 export { Easing } from './Easing';
+export { setDynamicFeatureFlag } from './featureFlags/dynamicFlags';
 export type { FrameInfo } from './frameCallback';
 export type {
   Adaptable,
@@ -188,7 +182,6 @@ export {
   BounceOutLeft,
   BounceOutRight,
   BounceOutUp,
-  combineTransition,
   ComplexAnimationBuilder,
   CurvedTransition,
   EntryExitTransition,
@@ -278,6 +271,7 @@ export {
   ZoomOutUp,
 } from './layoutReanimation';
 export { startMapper, stopMapper } from './mappers';
+export { jsVersion as reanimatedVersion } from './platform-specific/jsVersion';
 export type { ComponentCoords } from './platformFunctions';
 export {
   dispatchCommand,
@@ -299,5 +293,13 @@ export {
   ScreenTransition,
   startScreenTransition,
 } from './screenTransition';
-export type { WorkletRuntime } from 'react-native-worklets';
-export { isWorkletFunction } from 'react-native-worklets';
+export type { WorkletRuntime } from './workletFunctions';
+export {
+  createWorkletRuntime,
+  executeOnUIRuntimeSync,
+  isWorkletFunction,
+  makeShareableCloneRecursive,
+  runOnJS,
+  runOnRuntime,
+  runOnUI,
+} from './workletFunctions';

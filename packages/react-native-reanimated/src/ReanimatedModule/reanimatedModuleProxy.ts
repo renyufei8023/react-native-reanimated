@@ -40,7 +40,7 @@ export interface ReanimatedModuleProxy {
 
   unregisterSensor(sensorId: number): void;
 
-  registerJSProps(componentName: string, jsPropsNames: string[]): void;
+  setDynamicFeatureFlag(name: string, value: boolean): void;
 
   subscribeForKeyboardEvents(
     handler: ShareableRef<WorkletFunction>,

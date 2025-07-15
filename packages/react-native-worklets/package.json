@@ -75,7 +75,7 @@
     "babel-plugin-worklets": "workspace:*",
     "clang-format-node": "*",
     "code-tag": "^1.2.0",
-    "eslint": "^9.29.0",
+    "eslint": "~9.29.0",
     "eslint-plugin-reanimated": "workspace:*",
     "jest": "*",
     "knip": "*",

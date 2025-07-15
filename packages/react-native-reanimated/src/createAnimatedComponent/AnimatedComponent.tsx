@@ -30,10 +30,11 @@ import type {
   IAnimatedComponentInternal,
   INativeEventsManager,
   InitialComponentProps,
+  LayoutAnimationOrBuilder,
   NestedArray,
 } from './commonTypes';
 import { InlinePropManager } from './InlinePropManager';
-import JSPropsUpdater from './JSPropsUpdater';
+import jsPropsUpdater from './JSPropsUpdater';
 import { NativeEventsManager } from './NativeEventsManager';
 import { PropsFilter } from './PropsFilter';
 import { filterStyles, flattenArray } from './utils';
@@ -45,7 +46,8 @@ if (IS_WEB) {
 }
 
 export type Options<P> = {
-  setNativeProps: (ref: AnimatedComponentRef, props: P) => void;
+  setNativeProps?: (ref: AnimatedComponentRef, props: P) => void;
+  jsProps?: string[];
 };
 
 export default class AnimatedComponent
@@ -63,7 +65,6 @@ export default class AnimatedComponent
   jestInlineStyle: NestedArray<StyleProps> | undefined;
   jestAnimatedStyle: { value: StyleProps } = { value: {} };
   jestAnimatedProps: { value: AnimatedProps } = { value: {} };
-  _jsPropsUpdater = new JSPropsUpdater();
   _InlinePropManager = new InlinePropManager();
   _PropsFilter = new PropsFilter();
   _NativeEventsManager?: INativeEventsManager;
@@ -86,20 +87,10 @@ export default class AnimatedComponent
       this.jestAnimatedProps = { value: {} };
     }
 
-    const entering = this.props.entering;
     const skipEntering = this.context?.current;
-    if (
-      !entering ||
-      getReducedMotionFromConfig(entering as CustomConfig) ||
-      skipEntering
-    ) {
-      return;
-    }
-    // This call is responsible for configuring entering animations on Fabric.
-    updateLayoutAnimations(
-      this.reanimatedID,
+    this._configureTransition(
       LayoutAnimationType.ENTERING,
-      maybeBuild(entering, this.props?.style, displayName)
+      skipEntering ? this.props.entering : undefined
     );
   }
 
@@ -110,14 +101,15 @@ export default class AnimatedComponent
       this._NativeEventsManager = new NativeEventsManager(this, this._options);
     }
     this._NativeEventsManager?.attachEvents();
-    this._jsPropsUpdater.addOnJSPropsChangeListener(this);
     this._attachAnimatedStyles();
     this._InlinePropManager.attachInlineProps(this, this._getViewInfo());
 
-    const layout = this.props.layout;
-    if (layout) {
-      this._configureLayoutTransition();
+    if (this._options?.jsProps?.length) {
+      jsPropsUpdater.registerComponent(this, this._options.jsProps);
     }
+
+    this._configureTransition(LayoutAnimationType.LAYOUT, this.props.layout);
+    this._configureTransition(LayoutAnimationType.EXITING, this.props.exiting);
 
     if (IS_WEB) {
       if (this.props.exiting && this._componentDOMRef) {
@@ -151,9 +143,12 @@ export default class AnimatedComponent
   componentWillUnmount() {
     super.componentWillUnmount();
     this._NativeEventsManager?.detachEvents();
-    this._jsPropsUpdater.removeOnJSPropsChangeListener(this);
     this._detachStyles();
     this._InlinePropManager.detachInlineProps();
+
+    if (this._options?.jsProps?.length) {
+      jsPropsUpdater.unregisterComponent(this);
+    }
 
     const exiting = this.props.exiting;
 
@@ -185,7 +180,7 @@ export default class AnimatedComponent
     }
   }
 
-  _updateFromNative(props: StyleProps) {
+  setNativeProps(props: StyleProps) {
     if (this._options?.setNativeProps) {
       this._options.setNativeProps(
         this._componentRef as AnimatedComponentRef,
@@ -275,11 +270,17 @@ export default class AnimatedComponent
     _prevState: Readonly<unknown>,
     snapshot: DOMRect | null
   ) {
-    const layout = this.props.layout;
-    const oldLayout = prevProps.layout;
-    if (layout !== oldLayout) {
-      this._configureLayoutTransition();
-    }
+    this._configureTransition(
+      LayoutAnimationType.LAYOUT,
+      this.props.layout,
+      prevProps.layout
+    );
+    this._configureTransition(
+      LayoutAnimationType.EXITING,
+      this.props.exiting,
+      prevProps.exiting
+    );
+
     this._NativeEventsManager?.updateEvents(prevProps);
     this._attachAnimatedStyles();
     this._InlinePropManager.attachInlineProps(this, this._getViewInfo());
@@ -309,47 +310,45 @@ export default class AnimatedComponent
     this._cssStyle = filtered.cssStyle;
   }
 
-  _configureLayoutTransition() {
-    if (IS_WEB) {
+  _configureTransition(
+    type: LayoutAnimationType,
+    currentConfig: LayoutAnimationOrBuilder | undefined,
+    previousConfig?: LayoutAnimationOrBuilder
+  ) {
+    if (IS_WEB || currentConfig === previousConfig) {
       return;
     }
 
-    const layout = this.props.layout;
-    if (layout && getReducedMotionFromConfig(layout as CustomConfig)) {
-      return;
+    if (this._isReducedMotion(currentConfig)) {
+      if (previousConfig) {
+        currentConfig = undefined;
+      } else {
+        return;
+      }
     }
+
     updateLayoutAnimations(
-      this.getComponentViewTag(),
-      LayoutAnimationType.LAYOUT,
-      layout &&
+      type === LayoutAnimationType.ENTERING
+        ? this.reanimatedID
+        : this.getComponentViewTag(),
+      type,
+      currentConfig &&
         maybeBuild(
-          layout,
-          undefined /* We don't have to warn user if style has common properties with animation for LAYOUT */,
+          currentConfig,
+          type === LayoutAnimationType.LAYOUT
+            ? undefined /* We don't have to warn user if style has common properties with animation for LAYOUT */
+            : this.props?.style,
           this._displayName
         )
     );
   }
 
-  _onSetLocalRef() {
-    const tag = this.getComponentViewTag();
-
-    const { layout, entering, exiting } = this.props;
-    if (layout || entering || exiting) {
-      if (exiting) {
-        const reduceMotionInExiting =
-          'getReduceMotion' in exiting &&
-          typeof exiting.getReduceMotion === 'function'
-            ? getReduceMotionFromConfig(exiting.getReduceMotion())
-            : getReduceMotionFromConfig();
-        if (!reduceMotionInExiting) {
-          updateLayoutAnimations(
-            tag,
-            LayoutAnimationType.EXITING,
-            maybeBuild(exiting, this.props?.style, this._displayName)
-          );
-        }
-      }
-    }
+  _isReducedMotion(config?: LayoutAnimationOrBuilder): boolean {
+    return config &&
+      'getReduceMotion' in config &&
+      typeof config.getReduceMotion === 'function'
+      ? getReduceMotionFromConfig(config.getReduceMotion())
+      : getReduceMotionFromConfig();
   }
 
   // This is a component lifecycle method from React, therefore we are not calling it directly.

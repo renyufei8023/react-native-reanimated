@@ -1,4 +1,3 @@
-/* eslint-disable n/no-callback-literal */
 'use strict';
 
 import {
@@ -27,12 +26,14 @@ import {
   InterfaceOrientation,
   IOSReferenceFrame,
   KeyboardState,
+  reanimatedVersion,
   ReduceMotion,
   SensorType,
   setUpTests,
   withReanimatedTimer,
 } from './index';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const NOOP = () => {};
 const NOOP_FACTORY = () => NOOP;
 const ID = <T>(t: T) => t;
@@ -311,7 +312,7 @@ const core = {
   runOnRuntime: NOOP,
   makeMutable: ID,
   makeShareableCloneRecursive: ID,
-  isReanimated3: () => true,
+  isReanimated3: () => false,
   // isConfigured: ADD ME IF NEEDED
   enableLayoutAnimations: NOOP,
   // getViewProp: ADD ME IF NEEDED
@@ -488,6 +489,7 @@ const Reanimated = {
 
 module.exports = {
   __esModule: true,
+  reanimatedVersion,
   ...Reanimated,
   default: Animated,
 };

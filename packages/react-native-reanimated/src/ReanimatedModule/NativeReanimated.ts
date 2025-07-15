@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 'use strict';
 import type React from 'react';
 import type {
@@ -55,9 +56,9 @@ class NativeReanimatedModule implements IReanimatedModule {
    * We keep the instance of `WorkletsModule` here to keep correct coupling of
    * the modules and initialization order.
    */
+  // eslint-disable-next-line no-unused-private-class-members
   #workletsModule: IWorkletsModule;
   #reanimatedModuleProxy: ReanimatedModuleProxy;
-
   constructor() {
     this.#workletsModule = WorkletsModule;
     // These checks have to split since version checking depend on the execution order
@@ -162,8 +163,8 @@ See https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooti
     );
   }
 
-  registerJSProps(componentName: string, jsPropsNames: string[]) {
-    this.#reanimatedModuleProxy.registerJSProps(componentName, jsPropsNames);
+  setDynamicFeatureFlag(name: string, value: boolean) {
+    this.#reanimatedModuleProxy.setDynamicFeatureFlag(name, value);
   }
 
   subscribeForKeyboardEvents(
@@ -247,7 +248,7 @@ See https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooti
 class DummyReanimatedModuleProxy implements ReanimatedModuleProxy {
   configureLayoutAnimationBatch(): void {}
   setShouldAnimateExitingForTag(): void {}
-  registerJSProps(): void {}
+  setDynamicFeatureFlag(): void {}
   subscribeForKeyboardEvents(): number {
     return -1;
   }

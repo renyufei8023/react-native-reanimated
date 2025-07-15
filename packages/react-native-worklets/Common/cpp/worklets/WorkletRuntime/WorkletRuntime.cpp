@@ -73,6 +73,7 @@ static std::shared_ptr<jsi::Runtime> makeRuntime(
 }
 
 WorkletRuntime::WorkletRuntime(
+    uint64_t runtimeId,
     std::shared_ptr<jsi::HostObject> &&jsiWorkletsModuleProxy,
     const std::shared_ptr<MessageQueueThread> &jsQueue,
     const std::shared_ptr<JSScheduler> &jsScheduler,
@@ -81,7 +82,8 @@ WorkletRuntime::WorkletRuntime(
     const bool isDevBundle,
     const std::shared_ptr<const BigStringBuffer> &script,
     const std::string &sourceUrl)
-    : runtimeMutex_(std::make_shared<std::recursive_mutex>()),
+    : runtimeId_(runtimeId),
+      runtimeMutex_(std::make_shared<std::recursive_mutex>()),
       runtime_(makeRuntime(jsQueue, name, supportsLocking, runtimeMutex_)),
 #ifndef NDEBUG
       supportsLocking_(supportsLocking),
@@ -100,7 +102,7 @@ WorkletRuntime::WorkletRuntime(
       isDevBundle,
       std::move(optimizedJsiWorkletsModuleProxy));
 
-#ifdef WORKLETS_EXPERIMENTAL_BUNDLING
+#ifdef WORKLETS_BUNDLE_MODE
   if (!script) {
     throw std::runtime_error(
         "[Worklets] Expected to receive the bundle, but got nullptr instead.");
@@ -111,7 +113,7 @@ WorkletRuntime::WorkletRuntime(
   } catch (facebook::jsi::JSError error) {
     const auto &message = error.getMessage();
     const auto &stack = error.getStack();
-    if (!message.starts_with("Worklets initialized successfully")) {
+    if (!message.starts_with("[Worklets] Worklets initialized successfully")) {
       const auto newMessage =
           "[Worklets] Failed to initialize runtime. Reason: " + message;
       JSLogger::reportFatalErrorOnJS(
@@ -119,7 +121,7 @@ WorkletRuntime::WorkletRuntime(
           {.message = newMessage,
            .stack = stack,
            .name = "WorkletsError",
-           .jsEngine = "Worklets"})
+           .jsEngine = "Worklets"});
     }
   }
 #else
@@ -127,7 +129,7 @@ WorkletRuntime::WorkletRuntime(
   auto valueUnpackerBuffer =
       std::make_shared<const jsi::StringBuffer>(ValueUnpackerCode);
   rt.evaluateJavaScript(valueUnpackerBuffer, "valueUnpacker");
-#endif // WORKLETS_EXPERIMENTAL_BUNDLING
+#endif // WORKLETS_BUNDLE_MODE
 }
 
 jsi::Value WorkletRuntime::executeSync(
