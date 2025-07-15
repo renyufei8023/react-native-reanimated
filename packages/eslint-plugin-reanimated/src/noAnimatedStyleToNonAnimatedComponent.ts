@@ -162,7 +162,6 @@ const rule: TSESLint.RuleModule<'animatedStyle' | 'sharedValue'> = {
   },
   meta: {
     docs: {
-      recommended: 'recommended',
       description:
         "Don't pass a reanimated animated style into a non-animated component.",
     },

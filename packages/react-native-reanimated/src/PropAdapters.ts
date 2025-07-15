@@ -1,12 +1,11 @@
 'use strict';
-import { logger } from 'react-native-worklets';
+import { logger } from './common/logger';
 
 import type {
   AnimatedPropsAdapterFunction,
   AnimatedPropsAdapterWorklet,
 } from './commonTypes';
 
-// @ts-expect-error This overload is required by our API.
 export function createAnimatedPropAdapter(
   adapter: AnimatedPropsAdapterFunction,
   nativeProps?: string[]
