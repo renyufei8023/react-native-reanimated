@@ -104,6 +104,4 @@ declare global {
     nativeStateSource?: object
   ) => FlatShareableRef<T>;
   var ReanimatedError: IReanimatedErrorConstructor;
-  // eslint-disable-next-line reanimated/use-global-this
-  var _WORKLET: boolean | undefined; // hmmm
 }

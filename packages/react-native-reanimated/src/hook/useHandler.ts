@@ -50,6 +50,7 @@ export interface UseHandlerContext<Context extends Record<string, unknown>> {
  *   web.
  * @see https://docs.swmansion.com/react-native-reanimated/docs/advanced/useHandler
  */
+// @ts-expect-error This overload is required by our API.
 export function useHandler<
   Event extends object,
   Context extends Record<string, unknown>,

@@ -442,6 +442,7 @@ function checkSharedValueUsage(
  *   property of an Animated component you want to animate.
  * @see https://docs.swmansion.com/react-native-reanimated/docs/core/useAnimatedStyle
  */
+// @ts-expect-error This overload is required by our API.
 export function useAnimatedStyle<Style extends DefaultStyle>(
   updater: () => Style,
   dependencies?: DependencyList | null
@@ -500,7 +501,7 @@ For more, see the docs: \`https://docs.swmansion.com/react-native-reanimated/doc
   if (!animatedUpdaterData.current) {
     const initialStyle = initialUpdaterRun(updater);
     if (__DEV__) {
-      validateAnimatedStyles(initialStyle!);
+      validateAnimatedStyles(initialStyle);
     }
     animatedUpdaterData.current = {
       initial: {
