@@ -28,11 +28,11 @@
     "@expo/next-adapter": "^5.0.2",
     "@next/bundle-analyzer": "^13.5.3",
     "cypress": "^13.2.0",
-    "eslint": "~9.29.0",
+    "eslint": "9.29.0",
     "next-compose-plugins": "^2.2.1",
-    "prettier": "*",
+    "prettier": "3.5.3",
     "start-server-and-test": "^2.0.1",
-    "typescript": "*"
+    "typescript": "5.8.3"
   },
   "installConfig": {
     "selfReferences": false
