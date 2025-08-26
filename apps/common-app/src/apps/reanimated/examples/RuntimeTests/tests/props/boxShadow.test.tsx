@@ -50,7 +50,7 @@ describe('animation of BoxShadow', () => {
             },
           ),
         ],
-      } as unknown as DefaultStyle;
+      } as DefaultStyle;
     });
 
     const stylePassive = useAnimatedStyle(() => {
