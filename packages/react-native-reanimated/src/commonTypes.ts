@@ -1,5 +1,5 @@
 'use strict';
-import type { ElementType, RefObject } from 'react';
+import type { Component, ElementType, RefObject } from 'react';
 import type {
   FlatList,
   HostInstance,
@@ -478,4 +478,4 @@ export type InternalHostInstance = Partial<
   }
 >;
 
-export type InstanceOrElement = InternalHostInstance | ElementType;
+export type InstanceOrElement = InternalHostInstance | ElementType | Component;
